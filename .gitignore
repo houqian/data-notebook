@@ -1,0 +1,12 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Maven
+target/
+
+### Scala
+*.class
+*.log
+
+### JetBrains
+.idea
+*.iml
+
