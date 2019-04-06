@@ -58,7 +58,6 @@ object EndToEndExactlyOnceExample extends App {
 
     //      stream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges)
   }
-
   ssc.start()
   ssc.awaitTermination()
 }

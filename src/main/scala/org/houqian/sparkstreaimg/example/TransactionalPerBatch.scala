@@ -10,14 +10,14 @@ import com.typesafe.config.ConfigFactory
 import org.apache.spark.{SparkContext, SparkConf, TaskContext}
 import org.apache.spark.SparkContext._
 import org.apache.spark.streaming._
-import org.apache.spark.streaming.kafka010.{ KafkaUtils, HasOffsetRanges, OffsetRange }
+import org.apache.spark.streaming.kafka010.{KafkaUtils, HasOffsetRanges, OffsetRange}
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Assign
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 
 import scala.collection.JavaConverters._
 
 /** exactly-once semantics from kafka, by storing offsets in the same transaction as the results
-  Offsets and results will be stored per-batch, on the driver
+  * Offsets and results will be stored per-batch, on the driver
   */
 object TransactionalPerBatch {
   def main(args: Array[String]): Unit = {
@@ -42,12 +42,12 @@ object TransactionalPerBatch {
   }
 
   def setupSsc(
-    kafkaParams: Map[String, Object],
-    jdbcDriver: String,
-    jdbcUrl: String,
-    jdbcUser: String,
-    jdbcPassword: String
-  )(): StreamingContext = {
+                kafkaParams: Map[String, Object],
+                jdbcDriver: String,
+                jdbcUrl: String,
+                jdbcUser: String,
+                jdbcPassword: String
+              )(): StreamingContext = {
     val ssc = new StreamingContext(new SparkConf, Seconds(60))
 
     SetupJdbc(jdbcDriver, jdbcUrl, jdbcUser, jdbcPassword)
@@ -80,7 +80,7 @@ object TransactionalPerBatch {
       val results = rdd.reduceByKey {
         // This is the only block of code running on the executors.
         // reduceByKey did a shuffle, but that's fine, we're not relying on anything special about partitioning here
-        _+_
+        _ + _
       }.collect
 
       // Back to running on the driver
@@ -90,12 +90,14 @@ object TransactionalPerBatch {
         // store metric results
         results.foreach { pair =>
           val (topic, metric) = pair
-          val metricRows = sql"""
+          val metricRows =
+            sql"""
 update txn_data set metric = metric + ${metric}
   where topic = ${topic}
 """.update.apply()
           if (metricRows != 1) {
-            throw new Exception(s"""
+            throw new Exception(
+              s"""
 Got $metricRows rows affected instead of 1 when attempting to update metrics for $topic
 """)
           }
@@ -103,12 +105,14 @@ Got $metricRows rows affected instead of 1 when attempting to update metrics for
 
         // store offsets
         offsetRanges.foreach { osr =>
-          val offsetRows = sql"""
+          val offsetRows =
+            sql"""
 update txn_offsets set off = ${osr.untilOffset}
   where topic = ${osr.topic} and part = ${osr.partition} and off = ${osr.fromOffset}
 """.update.apply()
           if (offsetRows != 1) {
-            throw new Exception(s"""
+            throw new Exception(
+              s"""
 Got $offsetRows rows affected instead of 1 when attempting to update offsets for
  ${osr.topic} ${osr.partition} ${osr.fromOffset} -> ${osr.untilOffset}
 Was a partition repeated after a worker failure?
