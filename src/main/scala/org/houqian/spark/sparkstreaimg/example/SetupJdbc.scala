@@ -1,4 +1,4 @@
-package org.houqian.sparkstreaimg.example
+package org.houqian.spark.sparkstreaimg.example
 
 import scalikejdbc._
 

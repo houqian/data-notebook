@@ -1,4 +1,4 @@
-package org.houqian.sparkstreaimg.example
+package org.houqian.spark.sparkstreaimg.example
 
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.{SparkContext, SparkConf}

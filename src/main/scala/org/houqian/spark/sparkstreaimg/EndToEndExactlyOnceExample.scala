@@ -1,4 +1,4 @@
-package org.houqian.sparkstreaimg
+package org.houqian.spark.sparkstreaimg
 
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.TopicPartition

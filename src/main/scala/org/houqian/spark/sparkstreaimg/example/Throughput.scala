@@ -1,4 +1,4 @@
-package org.houqian.sparkstreaimg.example
+package org.houqian.spark.sparkstreaimg.example
 
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
