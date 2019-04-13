@@ -1,2 +1,2 @@
-# spark-notebook
-spark, spark streaming, kafka, exactly once, tansactional...
+# data-notebook
+各种数据组件的调研、案例等。
